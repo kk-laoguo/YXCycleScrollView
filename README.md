@@ -4,7 +4,6 @@
 # 效果图
 ![bannerh1.gif](https://i.loli.net/2019/05/08/5cd26bf317b77.gif)
 
-![banner2.png](https://i.loli.net/2019/05/08/5cd27ad6db413.png)
 
 # 特性
 
