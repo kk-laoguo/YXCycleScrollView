@@ -1,33 +1,50 @@
-# 轮播图
+//
+//  ViewController.m
+//  YXCycleScrollViewExample
+//
+//  Created by zainguo on 2019/5/7.
+//  Copyright © 2019 zainguo. All rights reserved.
+//
 
-一款简单实用多样式轮播图控件，可自定义样式；支持左右、上下滚动。
-# 效果图
-![banner.gif](https://i.loli.net/2019/05/08/5cd26bf317b77.gif)
+#import "ViewController.h"
 
-# 特性
-
-- 支持自定义`Cell`
-- 支持上下、左右滚动
-- 支持滚动缩放效果
-- 支持XIB
-- 支持设置滚动间隙
-
-# 安装
-
-- ### `CocoaPods`
-> pod
-
-- ### 手动安装
-> 将工程里`YXCycleScrollView`文件夹直接拖到项目即可
+#import "YXCycleScrollView.h"
+#import "CustomCycleCell.h"
+#import "UIImageView+WebCache.h"
 
 
+#define kSCREEN_WIDTH   [UIScreen mainScreen].bounds.size.width
+#define kSCREEN_HEIGHT  [UIScreen mainScreen].bounds.size.height
+
+@interface ViewController () <YXCycleScrollViewDelegate> {
+    
+    YXCycleScrollView *_cycleView2;
+    YXCycleScrollView *_cycleView3;
+    YXCycleScrollView *_cycleView4;
+    YXCycleScrollView *_cycleView5;
+    NSArray *_images;
+    NSArray *_titles;
 
 
-# 使用
-- 导入`#import "YXCycleScrollView.h"`
+}
+@property (weak, nonatomic) IBOutlet YXCycleScrollView *cycleView1;
+@property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
+@end
 
-```
- NSArray *images = @[@"http://pic37.nipic.com/20140105/15166348_202320428000_2.jpg",
+@implementation ViewController
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [_cycleView1 adjustWhenControllerViewWillAppear];
+    [_cycleView2 adjustWhenControllerViewWillAppear];
+    [_cycleView3 adjustWhenControllerViewWillAppear];
+
+}
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    NSArray *images = @[@"http://pic37.nipic.com/20140105/15166348_202320428000_2.jpg",
                         @"http://pic37.nipic.com/20140113/8800276_184927469000_2.png",
                         @"http://img.redocn.com/sheying/20140731/qinghaihuyuanjing_2820969.jpg",
                         @"http://pic29.nipic.com/20130517/9252150_140653449378_2.jpg",
@@ -77,9 +94,22 @@
     _cycleView4.imagesArray = images;
     _cycleView4.delegate = self;
     [self.scrollView addSubview:_cycleView4];
+    
+}
+#pragma mark - YXCycleScrollViewDelegate
+- (UINib *)customCellNibForCycleScrollView:(YXCycleScrollView *)view {
+    return [UINib nibWithNibName:@"CustomCycleCell" bundle:nil];
+}
 
-```
+- (void)setupCustomCell:(UICollectionViewCell *)cell forIndex:(NSInteger)index cycleScrollView:(YXCycleScrollView *)cycleScrollView {
+    CustomCycleCell *cell1 = (CustomCycleCell *)cell;
+    [cell1.imgView sd_setImageWithURL:[NSURL URLWithString:_images[index]]];
+    cell1.titleLab.text = _titles[index];
+}
 
+- (void)cycleScrollView:(YXCycleScrollView *)cycleScrollView didSelectItemAtIndex:(NSInteger)index {
+    [self.navigationController pushViewController:[NSClassFromString(@"CycleScrollViewController") new] animated:YES];
 
+}
 
-
+@end
