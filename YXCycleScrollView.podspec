@@ -12,7 +12,7 @@ Pod::Spec.new do |spec|
   spec.name         = "YXCycleScrollView"
   spec.version      = "0.0.1"
   spec.summary      = "一款简单实用多样式轮播图控件，可自定义样式；支持左右、上下滚动"
-  spec.description  = "多样式轮播图控件"
+  spec.description  = "一款简单实用多样式轮播图控件，可自定义样式；支持左右、上下滚动""
   spec.homepage     = "https://github.com/gouzyi/YXCycleScrollView.git"
 
   spec.license      = { :type => "MIT", :file => "LICENSE" }
