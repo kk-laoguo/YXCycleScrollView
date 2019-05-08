@@ -479,7 +479,7 @@ NSString *const IDENTIFI = @"YXCycleScrollViewCellIdentifier";
 
 - (void)adjustWhenControllerViewWillAppear {
     
-    long targetIndex = [self currentIndex];
+    NSInteger targetIndex = [self currentIndex];
     if (targetIndex < _totalItemsCount) {
         [_collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:targetIndex inSection:0] atScrollPosition:[self scrollPosition] animated:NO];
     }

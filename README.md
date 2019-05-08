@@ -2,26 +2,25 @@
 
 一款简单实用多样式轮播图控件，可自定义样式；支持左右、上下滚动。
 # 效果图
-![banner.gif](https://i.loli.net/2019/05/08/5cd26bf317b77.gif)
+![bannerh1.gif](https://i.loli.net/2019/05/08/5cd26bf317b77.gif)
+
+![banner2.png](https://i.loli.net/2019/05/08/5cd27ad6db413.png)
 
 # 特性
 
 - 支持自定义`Cell`
 - 支持上下、左右滚动
 - 支持滚动缩放效果
-- 支持XIB
+- 支持XIB创建和属性设置
 - 支持设置滚动间隙
 
 # 安装
 
 - ### `CocoaPods`
-> pod
+> pod 'YXCycleScrollView'
 
 - ### 手动安装
 > 将工程里`YXCycleScrollView`文件夹直接拖到项目即可
-
-
-
 
 # 使用
 - 导入`#import "YXCycleScrollView.h"`
@@ -67,6 +66,26 @@
 
 ```
 
+### YXCycleScrollViewDelegate
 
+```
+#pragma mark - YXCycleScrollViewDelegate
+// 自定义Cell样式设置
+- (UINib *)customCellNibForCycleScrollView:(YXCycleScrollView *)view {
+return [UINib nibWithNibName:@"CustomCycleCell" bundle:nil];
+}
+
+- (void)setupCustomCell:(UICollectionViewCell *)cell forIndex:(NSInteger)index cycleScrollView:(YXCycleScrollView *)cycleScrollView {
+CustomCycleCell *cell1 = (CustomCycleCell *)cell;
+[cell1.imgView sd_setImageWithURL:[NSURL URLWithString:_images[index]]];
+cell1.titleLab.text = _titles[index];
+}
+// 点击回调
+- (void)cycleScrollView:(YXCycleScrollView *)cycleScrollView didSelectItemAtIndex:(NSInteger)index {
+[self.navigationController pushViewController:[NSClassFromString(@"CycleScrollViewController") new] animated:YES];
+
+}
+
+```
 
 

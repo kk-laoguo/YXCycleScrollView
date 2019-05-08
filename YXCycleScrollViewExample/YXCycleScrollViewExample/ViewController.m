@@ -96,6 +96,7 @@
     [self.scrollView addSubview:_cycleView4];
     
 }
+
 #pragma mark - YXCycleScrollViewDelegate
 - (UINib *)customCellNibForCycleScrollView:(YXCycleScrollView *)view {
     return [UINib nibWithNibName:@"CustomCycleCell" bundle:nil];
