@@ -575,6 +575,7 @@ NSString *const IDENTIFI = @"YXCycleScrollViewCellIdentifier";
         
         UIImageView *imageView = [[UIImageView alloc] init];
         _imageView = imageView;
+        self.backgroundColor = [UIColor whiteColor];
         [self.contentView addSubview:imageView];
     }
     return self;
