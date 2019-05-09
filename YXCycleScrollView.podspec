@@ -10,7 +10,11 @@ Pod::Spec.new do |spec|
 
 
   spec.name         = "YXCycleScrollView"
+<<<<<<< HEAD
   spec.version      = "0.0.1"
+=======
+  spec.version      = "0.0.3"
+>>>>>>> parent of 9a01862... zain
   spec.summary      = "一款简单实用多样式轮播图控件，可自定义样式；支持左右、上下滚动"
   spec.description  = "一款简单实用多样式轮播图控件，可自定义样式；支持左右、上下滚动，支持XIB创建和设置属性"
   spec.homepage     = "https://github.com/gouzyi/YXCycleScrollView.git"
