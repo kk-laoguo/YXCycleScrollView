@@ -86,6 +86,9 @@ IB_DESIGNABLE
 @property (nonatomic, assign) IBInspectable CGFloat itemZoomScale;
 /** 轮播图片的ContentMode，默认为 UIViewContentModeScaleToFill */
 @property (nonatomic, assign) UIViewContentMode imageViewContentMode;
+/** 轮播图片圆角默认: 0 **/
+@property (nonatomic, assign) CGFloat radius;
+
 
 #pragma mark - PageController
 

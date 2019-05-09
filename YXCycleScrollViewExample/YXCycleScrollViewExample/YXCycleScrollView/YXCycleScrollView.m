@@ -168,6 +168,9 @@ NSString *const IDENTIFI = @"YXCycleScrollViewCellIdentifier";
         return cell;
     }
     cell.imageView.contentMode = _imageViewContentMode;
+    if (_radius) {
+        cell.imageView.layer.cornerRadius = _radius;
+    }
     cell.imageView.layer.masksToBounds = YES;
     [cell.imageView sd_setImageWithURL:[NSURL URLWithString:_imagesArray[index]]];
     return cell;
@@ -337,6 +340,13 @@ NSString *const IDENTIFI = @"YXCycleScrollViewCellIdentifier";
     _imageViewContentMode = imageViewContentMode;
     [_collectionView reloadData];
 }
+
+- (void)setRadius:(CGFloat)radius {
+    
+    _radius = radius;
+    [_collectionView reloadData];
+}
+
 - (void)setAllowsDragging:(BOOL)allowsDragging {
     
     _allowsDragging = allowsDragging;
