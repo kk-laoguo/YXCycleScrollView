@@ -249,7 +249,6 @@ NSString *const IDENTIFI = @"YXCycleScrollViewCellIdentifier";
         return;
     }
     [_collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:targetIndex inSection:0] atScrollPosition:[self scrollPosition]  animated:YES];
-    
 }
 
 #pragma mark - Target Methods
@@ -568,7 +567,6 @@ NSString *const IDENTIFI = @"YXCycleScrollViewCellIdentifier";
 
 
 #pragma mark - YXCycleScrollViewCell
-
 @implementation YXCycleScrollViewCell
 
 - (instancetype)initWithFrame:(CGRect)frame {
