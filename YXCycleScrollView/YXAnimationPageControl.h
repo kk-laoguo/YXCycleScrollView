@@ -38,11 +38,11 @@ NS_ASSUME_NONNULL_BEGIN
 /*
  点的大小
  */
-@property(nonatomic, assign) CGFloat controlSize;
+@property(nonatomic, assign) NSInteger controlSize;
 /*
  点的间距
  */
-@property(nonatomic, assign) CGFloat controlSpacing;
+@property(nonatomic, assign) NSInteger controlSpacing;
 /*
  其他未选中点颜色
  */

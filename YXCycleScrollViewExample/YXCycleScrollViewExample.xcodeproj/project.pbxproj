@@ -13,9 +13,6 @@
 		746A621D2281B634007F1DA0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 746A621C2281B634007F1DA0 /* Assets.xcassets */; };
 		746A62202281B634007F1DA0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 746A621E2281B634007F1DA0 /* LaunchScreen.storyboard */; };
 		746A62232281B634007F1DA0 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 746A62222281B634007F1DA0 /* main.m */; };
-		746A62302281B7A3007F1DA0 /* YXAnimationPageControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 746A622A2281B7A3007F1DA0 /* YXAnimationPageControl.m */; };
-		746A62312281B7A3007F1DA0 /* YXCycleScrollViewFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 746A622E2281B7A3007F1DA0 /* YXCycleScrollViewFlowLayout.m */; };
-		746A62322281B7A3007F1DA0 /* YXCycleScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 746A622F2281B7A3007F1DA0 /* YXCycleScrollView.m */; };
 		746A62362281C609007F1DA0 /* CycleScrollViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 746A62342281C609007F1DA0 /* CycleScrollViewController.m */; };
 		746A62372281C609007F1DA0 /* CycleScrollViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 746A62352281C609007F1DA0 /* CycleScrollViewController.xib */; };
 		746A623B2281C63C007F1DA0 /* CustomCycleCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 746A62392281C63C007F1DA0 /* CustomCycleCell.m */; };
@@ -37,12 +34,6 @@
 		746A621F2281B634007F1DA0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		746A62212281B634007F1DA0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		746A62222281B634007F1DA0 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		746A622A2281B7A3007F1DA0 /* YXAnimationPageControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YXAnimationPageControl.m; sourceTree = "<group>"; };
-		746A622B2281B7A3007F1DA0 /* YXCycleScrollViewFlowLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YXCycleScrollViewFlowLayout.h; sourceTree = "<group>"; };
-		746A622C2281B7A3007F1DA0 /* YXCycleScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YXCycleScrollView.h; sourceTree = "<group>"; };
-		746A622D2281B7A3007F1DA0 /* YXAnimationPageControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YXAnimationPageControl.h; sourceTree = "<group>"; };
-		746A622E2281B7A3007F1DA0 /* YXCycleScrollViewFlowLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YXCycleScrollViewFlowLayout.m; sourceTree = "<group>"; };
-		746A622F2281B7A3007F1DA0 /* YXCycleScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YXCycleScrollView.m; sourceTree = "<group>"; };
 		746A62332281C609007F1DA0 /* CycleScrollViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CycleScrollViewController.h; sourceTree = "<group>"; };
 		746A62342281C609007F1DA0 /* CycleScrollViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CycleScrollViewController.m; sourceTree = "<group>"; };
 		746A62352281C609007F1DA0 /* CycleScrollViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CycleScrollViewController.xib; sourceTree = "<group>"; };
@@ -106,7 +97,6 @@
 		746A62122281B633007F1DA0 /* YXCycleScrollViewExample */ = {
 			isa = PBXGroup;
 			children = (
-				746A62292281B7A3007F1DA0 /* YXCycleScrollView */,
 				746A62132281B633007F1DA0 /* AppDelegate.h */,
 				746A62142281B633007F1DA0 /* AppDelegate.m */,
 				746A62162281B633007F1DA0 /* ViewController.h */,
@@ -127,19 +117,6 @@
 				746A62222281B634007F1DA0 /* main.m */,
 			);
 			path = YXCycleScrollViewExample;
-			sourceTree = "<group>";
-		};
-		746A62292281B7A3007F1DA0 /* YXCycleScrollView */ = {
-			isa = PBXGroup;
-			children = (
-				746A622D2281B7A3007F1DA0 /* YXAnimationPageControl.h */,
-				746A622A2281B7A3007F1DA0 /* YXAnimationPageControl.m */,
-				746A622C2281B7A3007F1DA0 /* YXCycleScrollView.h */,
-				746A622F2281B7A3007F1DA0 /* YXCycleScrollView.m */,
-				746A622B2281B7A3007F1DA0 /* YXCycleScrollViewFlowLayout.h */,
-				746A622E2281B7A3007F1DA0 /* YXCycleScrollViewFlowLayout.m */,
-			);
-			path = YXCycleScrollView;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -266,11 +243,8 @@
 			files = (
 				746A62182281B633007F1DA0 /* ViewController.m in Sources */,
 				746A62232281B634007F1DA0 /* main.m in Sources */,
-				746A62302281B7A3007F1DA0 /* YXAnimationPageControl.m in Sources */,
 				746A62402281CB59007F1DA0 /* TextCell.m in Sources */,
-				746A62322281B7A3007F1DA0 /* YXCycleScrollView.m in Sources */,
 				746A62362281C609007F1DA0 /* CycleScrollViewController.m in Sources */,
-				746A62312281B7A3007F1DA0 /* YXCycleScrollViewFlowLayout.m in Sources */,
 				746A62152281B633007F1DA0 /* AppDelegate.m in Sources */,
 				746A623B2281C63C007F1DA0 /* CustomCycleCell.m in Sources */,
 			);
