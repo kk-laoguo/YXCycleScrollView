@@ -574,6 +574,7 @@ NSString *const IDENTIFI = @"YXCycleScrollViewCellIdentifier";
 - (instancetype)initWithFrame:(CGRect)frame {
     
     if (self = [super initWithFrame:frame]) {
+        
         UIImageView *imageView = [[UIImageView alloc] init];
         _imageView = imageView;
         [self.contentView addSubview:imageView];
