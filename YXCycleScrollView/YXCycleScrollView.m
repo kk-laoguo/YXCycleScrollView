@@ -7,10 +7,8 @@
 //
 
 #import "YXCycleScrollView.h"
-
 #import "UIImageView+WebCache.h"
 #import "YXCycleScrollViewFlowLayout.h"
-
 #import "YXAnimationPageControl.h"
 
 
@@ -26,9 +24,6 @@ NSString *const IDENTIFI = @"YXCycleScrollViewCellIdentifier";
 @property (nonatomic, assign) BOOL itemSizeFlag;
 @property (nonatomic, assign) NSInteger indexOffset;
 @property (nonatomic, assign) NSInteger fromIndex;
-
-
-
 @end
 
 @implementation YXCycleScrollView
@@ -36,6 +31,7 @@ NSString *const IDENTIFI = @"YXCycleScrollViewCellIdentifier";
 #pragma mark - Intial Methods
 
 - (void)willMoveToSuperview:(UIView *)newSuperview {
+    
     [super willMoveToSuperview:newSuperview];
     if (!newSuperview && _timer) {
         [self pm_invalidateTimer];
@@ -43,6 +39,7 @@ NSString *const IDENTIFI = @"YXCycleScrollViewCellIdentifier";
 }
 
 - (void)dealloc {
+    
     _collectionView.delegate = nil;
     _collectionView.dataSource = nil;
 }
@@ -50,7 +47,6 @@ NSString *const IDENTIFI = @"YXCycleScrollViewCellIdentifier";
 - (instancetype)initWithFrame:(CGRect)frame {
     
     if (self = [super initWithFrame:frame]) {
-        
         [self initialization];
         [self pm_addSubviews];
     }
@@ -60,7 +56,6 @@ NSString *const IDENTIFI = @"YXCycleScrollViewCellIdentifier";
 - (instancetype)initWithCoder:(NSCoder *)aDecoder {
     
     if (self = [super initWithCoder:aDecoder]) {
-        
         [self initialization];
         [self pm_addSubviews];
     }
@@ -85,6 +80,7 @@ NSString *const IDENTIFI = @"YXCycleScrollViewCellIdentifier";
     _pageControlAliment = YXCycleScrollViewPageContolAlimentCenter;
     // 分页控制器样式
     _pageControlStyle = YXCycleScrollViewPageContolStyleClassic;
+    _imageViewContentMode = UIViewContentModeScaleToFill;
     _pageIndicatorolor = [UIColor grayColor];
     _currentPageIndicatorColor = [UIColor whiteColor];
     
@@ -117,8 +113,10 @@ NSString *const IDENTIFI = @"YXCycleScrollViewCellIdentifier";
 - (void)layoutSubviews {
     
     [super layoutSubviews];
+    
     _flowLayout.itemSize =  _itemSizeFlag ? _itemSize : self.bounds.size;
-    _pageControl.frame = CGRectMake(0.f, self.bounds.size.height - 15.f, self.bounds.size.width, 15.f);
+    _collectionView.frame = self.bounds;
+    
     if (_collectionView.contentOffset.x == 0 &&
         _totalItemsCount) {
         int targetIndex = 0;
@@ -169,14 +167,19 @@ NSString *const IDENTIFI = @"YXCycleScrollViewCellIdentifier";
         [_delegate setupCustomCell:cell forIndex:index cycleScrollView:self];
         return cell;
     }
+    cell.imageView.contentMode = _imageViewContentMode;
+    if (_radius) {
+        cell.imageView.layer.cornerRadius = _radius;
+    }
+    cell.imageView.layer.masksToBounds = YES;
     [cell.imageView sd_setImageWithURL:[NSURL URLWithString:_imagesArray[index]]];
     return cell;
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    if ([_delegate respondsToSelector:@selector(cycleScrollView:didScrollToIndex:)]) {
-        [_delegate cycleScrollView:self didScrollToIndex:[self pageControlIndexWithCurrentCellIndex:indexPath.item]];
+    if ([_delegate respondsToSelector:@selector(cycleScrollView:didSelectItemAtIndex:)]) {
+        [_delegate cycleScrollView:self didSelectItemAtIndex:[self pageControlIndexWithCurrentCellIndex:indexPath.item]];
     }
     if (_clickItemOperationBlock) {
         _clickItemOperationBlock([self pageControlIndexWithCurrentCellIndex:indexPath.item]);
@@ -195,7 +198,7 @@ NSString *const IDENTIFI = @"YXCycleScrollViewCellIdentifier";
         return;
     }
     
-    int indexOnPageControl = [self pageControlIndexWithCurrentCellIndex:[self currentIndex]];
+    NSInteger indexOnPageControl = [self pageControlIndexWithCurrentCellIndex:[self currentIndex]];
     switch (_pageControlStyle) {
         case YXCycleScrollViewPageContolStyleAnimated: {
             YXAnimationPageControl *pageControl = [[YXAnimationPageControl alloc] init];
@@ -249,7 +252,6 @@ NSString *const IDENTIFI = @"YXCycleScrollViewCellIdentifier";
         return;
     }
     [_collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:targetIndex inSection:0] atScrollPosition:[self scrollPosition]  animated:YES];
-    
 }
 
 #pragma mark - Target Methods
@@ -320,7 +322,7 @@ NSString *const IDENTIFI = @"YXCycleScrollViewCellIdentifier";
     _totalItemsCount = self.infiniteLoop ? imagesArray.count * 100 : imagesArray.count;
 
     if (_imagesArray.count > 1) {
-        _collectionView.scrollEnabled = YES;
+        _collectionView.scrollEnabled = _allowsDragging;
         [self setAutoScroll:self.autoScroll];
     } else {
         _collectionView.scrollEnabled = NO;
@@ -332,6 +334,18 @@ NSString *const IDENTIFI = @"YXCycleScrollViewCellIdentifier";
 }
 
 #pragma mark - 自定义样式
+
+- (void)setImageViewContentMode:(UIViewContentMode)imageViewContentMode {
+    
+    _imageViewContentMode = imageViewContentMode;
+    [_collectionView reloadData];
+}
+
+- (void)setRadius:(CGFloat)radius {
+    
+    _radius = radius;
+    [_collectionView reloadData];
+}
 
 - (void)setAllowsDragging:(BOOL)allowsDragging {
     
@@ -373,9 +387,7 @@ NSString *const IDENTIFI = @"YXCycleScrollViewCellIdentifier";
 
 - (void)setPageControlStyle:(YXCycleScrollViewPageContolStyle)pageControlStyle {
     
-    if (_pageControlStyle == pageControlStyle ) {
-        return;
-    }
+    if (_pageControlStyle == pageControlStyle ) return;
     _pageControlStyle = pageControlStyle;
     [self pm_setupPageControl];
     
@@ -405,9 +417,45 @@ NSString *const IDENTIFI = @"YXCycleScrollViewCellIdentifier";
     }
 }
 
+- (void)setPageControlBottomOffset:(CGFloat)pageControlBottomOffset {
+    
+    if (_pageControlBottomOffset == pageControlBottomOffset)  return;
+    _pageControlBottomOffset = pageControlBottomOffset;
+    [self setNeedsLayout];
+}
+
+- (void)setPageControlRightOffset:(CGFloat)pageControlRightOffset {
+    
+    if (_pageControlRightOffset == pageControlRightOffset)  return;
+       
+    _pageControlRightOffset = pageControlRightOffset;
+    [self setNeedsLayout];
+}
+
+- (void)setControlSize:(CGFloat)controlSize {
+    
+    if (_controlSize == controlSize) return;
+    _controlSize = controlSize;
+    if ([_pageControl isKindOfClass:[YXAnimationPageControl class]]) {
+        YXAnimationPageControl *pageControl = (YXAnimationPageControl *)_pageControl;
+        pageControl.controlSize = controlSize;
+    }
+}
+
+- (void)setControlSpacing:(CGFloat)controlSpacing {
+    
+    if (_controlSpacing == controlSpacing) return;
+    _controlSpacing = controlSpacing;
+    if ([_pageControl isKindOfClass:[YXAnimationPageControl class]]) {
+        YXAnimationPageControl *pageControl = (YXAnimationPageControl *)_pageControl;
+        pageControl.controlSpacing = controlSpacing;
+    }
+}
+
 #pragma mark - Gtter Methods
 
 - (NSInteger)currentIndex {
+    
     if (_collectionView.frame.size.width == 0 ||
         _collectionView.frame.size.height == 0) {
         return 0;
@@ -441,10 +489,11 @@ NSString *const IDENTIFI = @"YXCycleScrollViewCellIdentifier";
 
 - (void)adjustWhenControllerViewWillAppear {
     
-    long targetIndex = [self currentIndex];
+    NSInteger targetIndex = [self currentIndex];
     if (targetIndex < _totalItemsCount) {
         [_collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:targetIndex inSection:0] atScrollPosition:[self scrollPosition] animated:NO];
     }
+    
 }
 - (void)makeSccrollViewScrollToIndex:(NSInteger)index {
     
@@ -530,12 +579,12 @@ NSString *const IDENTIFI = @"YXCycleScrollViewCellIdentifier";
 
 
 #pragma mark - YXCycleScrollViewCell
-
 @implementation YXCycleScrollViewCell
 
 - (instancetype)initWithFrame:(CGRect)frame {
     
     if (self = [super initWithFrame:frame]) {
+        
         UIImageView *imageView = [[UIImageView alloc] init];
         _imageView = imageView;
         [self.contentView addSubview:imageView];

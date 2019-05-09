@@ -187,7 +187,7 @@ static NSInteger const DotBgImageTag = 2000;
     _currentPage = currentPage;
 }
 
-- (void)setControlSize:(NSInteger)controlSize {
+- (void)setControlSize:(CGFloat)controlSize {
     
     if (_controlSize != controlSize) {
         _controlSize = controlSize;
@@ -195,7 +195,7 @@ static NSInteger const DotBgImageTag = 2000;
     }
 }
 
-- (void)setControlSpacing:(NSInteger)controlSpacing {
+- (void)setControlSpacing:(CGFloat)controlSpacing {
     
     if (_controlSpacing != controlSpacing) {
         _controlSpacing = controlSpacing;

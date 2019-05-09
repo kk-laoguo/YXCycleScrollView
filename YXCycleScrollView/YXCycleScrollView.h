@@ -22,17 +22,16 @@ typedef NS_ENUM(NSUInteger, YXCycleScrollViewPageContolAliment) {
     YXCycleScrollViewPageContolAlimentRight,
 };
 
-
-
 @class YXCycleScrollView;
 
 @protocol YXCycleScrollViewDelegate <NSObject>
+
+@optional;
 
 /** 点击图片回调 */
 - (void)cycleScrollView:(YXCycleScrollView *)cycleScrollView didSelectItemAtIndex:(NSInteger)index;
 /** 图片滚动回调 */
 - (void)cycleScrollView:(YXCycleScrollView *)cycleScrollView didScrollToIndex:(NSInteger)index;
-
 
 // ========== 轮播自定义cell ==========
 /** 如果你需要自定义cell样式，请在实现此代理方法返回你的自定义cell的class。 */
@@ -57,8 +56,16 @@ IB_DESIGNABLE
 @property (nonatomic,assign) IBInspectable BOOL infiniteLoop;
 /** 是否自动滚动,默认Yes */
 @property (nonatomic,assign) IBInspectable BOOL autoScroll;
+
+
+#if TARGET_INTERFACE_BUILDER
+@property (nonatomic, assign) IBInspectable NSInteger scrollDirection;
+
+#else
 /** 图片滚动方向，默认为水平滚动 */
-@property (nonatomic, assign) IBInspectable UICollectionViewScrollDirection scrollDirection;
+@property (nonatomic, assign) UICollectionViewScrollDirection scrollDirection;
+#endif
+
 
 #pragma mark - 数据源
 /** 网络图片 url string 数组 */
@@ -77,28 +84,44 @@ IB_DESIGNABLE
 @property (nonatomic, assign) IBInspectable CGFloat itemSpacing;
 /** 默认 1.f(no scaling), it ranges from 0.f to 1.f */
 @property (nonatomic, assign) IBInspectable CGFloat itemZoomScale;
+/** 轮播图片的ContentMode，默认为 UIViewContentModeScaleToFill */
+@property (nonatomic, assign) UIViewContentMode imageViewContentMode;
+/** 轮播图片圆角默认: 0 **/
+@property (nonatomic, assign) CGFloat radius;
+
 
 #pragma mark - PageController
+
+#if TARGET_INTERFACE_BUILDER
+/** 分页控制器位置 */
+@property (nonatomic, assign) IBInspectable NSInteger pageControlAliment;
+/** 分页控制器样式 */
+@property (nonatomic, assign) IBInspectable NSInteger pageControlStyle;
+
+#else
 /** 分页控制器位置 */
 @property (nonatomic, assign) YXCycleScrollViewPageContolAliment pageControlAliment;
 /** 分页控制器样式 */
 @property (nonatomic, assign) YXCycleScrollViewPageContolStyle pageControlStyle;
-/** 默认gray */
-@property (nullable, nonatomic, strong) IBInspectable UIColor *pageIndicatorolor;
-/** 默认白色 */
-@property (nullable, nonatomic, strong) IBInspectable UIColor *currentPageIndicatorColor;
 
-/** 分页控件距离轮播图的底部间距（在默认间距基础上）的偏移量 */
+#endif
+
+/** 默认gray */
+@property (nonatomic, strong) IBInspectable UIColor *pageIndicatorolor;
+/** 默认白色 */
+@property (nonatomic, strong) IBInspectable UIColor *currentPageIndicatorColor;
+
+/** 分页控件距离轮播图的底部间距（在默认间距基础上）的偏移量 默认: 0 */
 @property (nonatomic, assign) CGFloat pageControlBottomOffset;
 
-/** 分页控件距离轮播图的右边间距（在默认间距基础上）的偏移量 */
+/** 分页控件距离轮播图的右边间距（在默认间距基础上）的偏移量 默认: 0 */
 @property (nonatomic, assign) CGFloat pageControlRightOffset;
 
 //////////////////////// 只针对动画样式下的pageControl //////////////////////////
 /** 点的大小默认: 6 */
-@property(nonatomic, assign) NSInteger controlSize;
+@property(nonatomic, assign) CGFloat controlSize;
 /** 点的间距默认: 8 */
-@property(nonatomic, assign) NSInteger controlSpacing;
+@property(nonatomic, assign) CGFloat controlSpacing;
 
 /** block方式监听点击 */
 @property (nonatomic, copy) void (^clickItemOperationBlock)(NSInteger currentIndex);
@@ -108,7 +131,6 @@ IB_DESIGNABLE
 - (void)makeSccrollViewScrollToIndex:(NSInteger)index;
 /** 解决viewWillAppear时出现时轮播图卡在一半的问题，在控制器viewWillAppear时调用此方法 */
 - (void)adjustWhenControllerViewWillAppear;
-
 
 @end
 
