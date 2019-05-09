@@ -445,6 +445,7 @@ NSString *const IDENTIFI = @"YXCycleScrollViewCellIdentifier";
 #pragma mark - Gtter Methods
 
 - (NSInteger)currentIndex {
+    
     if (_collectionView.frame.size.width == 0 ||
         _collectionView.frame.size.height == 0) {
         return 0;
@@ -482,6 +483,7 @@ NSString *const IDENTIFI = @"YXCycleScrollViewCellIdentifier";
     if (targetIndex < _totalItemsCount) {
         [_collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:targetIndex inSection:0] atScrollPosition:[self scrollPosition] animated:NO];
     }
+    
 }
 - (void)makeSccrollViewScrollToIndex:(NSInteger)index {
     
