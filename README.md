@@ -1,6 +1,4 @@
-# 轮播图
 
-一款简单实用多样式轮播图控件，可自定义样式；支持左右、上下滚动。
 # 效果图
 ![bannerh1.gif](https://i.loli.net/2019/05/08/5cd26bf317b77.gif)
 
@@ -85,6 +83,12 @@ cell1.titleLab.text = _titles[index];
 
 }
 
+
+
 ```
+#### 参考链接
+[SDCycleScrollView](https://github.com/gsdios/SDCycleScrollView)
+
+
 
 
