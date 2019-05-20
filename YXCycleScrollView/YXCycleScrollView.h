@@ -56,6 +56,8 @@ IB_DESIGNABLE
 @property (nonatomic,assign) IBInspectable BOOL infiniteLoop;
 /** 是否自动滚动,默认Yes */
 @property (nonatomic,assign) IBInspectable BOOL autoScroll;
+/** 站位图 */
+@property (nonatomic, copy) NSString *placeholderImageName;
 
 
 #if TARGET_INTERFACE_BUILDER

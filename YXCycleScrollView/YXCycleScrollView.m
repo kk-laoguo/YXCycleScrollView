@@ -172,7 +172,7 @@ NSString *const IDENTIFI = @"YXCycleScrollViewCellIdentifier";
         cell.imageView.layer.cornerRadius = _radius;
     }
     cell.imageView.layer.masksToBounds = YES;
-    [cell.imageView sd_setImageWithURL:[NSURL URLWithString:_imagesArray[index]]];
+    [cell.imageView sd_setImageWithURL:[NSURL URLWithString:_imagesArray[index]] placeholderImage:[UIImage imageNamed:_placeholderImageName]];
     return cell;
 }
 
@@ -313,7 +313,11 @@ NSString *const IDENTIFI = @"YXCycleScrollViewCellIdentifier";
     _scrollDirection = scrollDirection;
     _flowLayout.scrollDirection = scrollDirection;
 }
-
+- (void)setPlaceholderImageName:(NSString *)placeholderImageName {
+    
+    _placeholderImageName = placeholderImageName;
+    [self.collectionView reloadData];
+}
 #pragma mark - 数据源
 
 - (void)setImagesArray:(NSArray<NSString *> *)imagesArray {
