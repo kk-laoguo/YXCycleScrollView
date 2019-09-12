@@ -33,14 +33,16 @@ typedef NS_ENUM(NSUInteger, YXCycleScrollViewPageContolAliment) {
 /** 图片滚动回调 */
 - (void)cycleScrollView:(YXCycleScrollView *)cycleScrollView didScrollToIndex:(NSInteger)index;
 
-// ========== 轮播自定义cell ==========
+/** ========== 轮播自定义cell ========== */
 /** 如果你需要自定义cell样式，请在实现此代理方法返回你的自定义cell的class。 */
 - (Class)customCellClassForCycleScrollView:(YXCycleScrollView *)view;
 /** 如果你需要自定义cell样式，请在实现此代理方法返回你的自定义cell的Nib。 */
 - (UINib *)customCellNibForCycleScrollView:(YXCycleScrollView *)view;
 
 /** 如果你自定义了cell样式，请在实现此代理方法为你的cell填充数据以及其它一系列设置 */
-- (void)setupCustomCell:(UICollectionViewCell *)cell forIndex:(NSInteger)index cycleScrollView:(YXCycleScrollView *)cycleScrollView;
+- (void)setupCustomCell:(UICollectionViewCell *)cell
+               forIndex:(NSInteger)index
+        cycleScrollView:(YXCycleScrollView *)cycleScrollView;
 
 @end
 
@@ -58,7 +60,6 @@ IB_DESIGNABLE
 @property (nonatomic,assign) IBInspectable BOOL autoScroll;
 /** 站位图 */
 @property (nonatomic, copy) NSString *placeholderImageName;
-
 
 #if TARGET_INTERFACE_BUILDER
 @property (nonatomic, assign) IBInspectable NSInteger scrollDirection;
