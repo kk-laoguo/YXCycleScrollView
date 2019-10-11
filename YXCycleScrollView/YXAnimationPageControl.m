@@ -14,9 +14,7 @@ static NSInteger const DotBgImageTag = 2000;
 
 @implementation YXAnimationPageControl
 
-
 #pragma mark - Intial Methods
-
 - (instancetype)init{
     
     if(self = [super init]) {
@@ -165,18 +163,14 @@ static NSInteger const DotBgImageTag = 2000;
     
     NSInteger index = tap.view.tag - DotTag;
     [self setCurrentPage:index];
-    
 }
-
 #pragma mark - Setter
 - (void)setNumberOfPages:(NSInteger)numberOfPages {
     
     if (_numberOfPages == numberOfPages) return;
     _numberOfPages = numberOfPages;
     [self pm_setupDotView];
-    
 }
-
 - (void)setCurrentPage:(NSInteger)currentPage {
     
     if (_currentPage == currentPage) return;
@@ -194,14 +188,12 @@ static NSInteger const DotBgImageTag = 2000;
         [self pm_setupDotView];
     }
 }
-
 - (void)setControlSpacing:(CGFloat)controlSpacing {
     
     if (_controlSpacing != controlSpacing) {
         _controlSpacing = controlSpacing;
         [self pm_setupDotView];
     }
-    
 }
 
 - (void)setOtherColor:(UIColor *)otherColor {
@@ -218,7 +210,6 @@ static NSInteger const DotBgImageTag = 2000;
         _currentColor = currentColor;
         [self pm_setupDotView];
     }
-    
 }
 
 - (void)setCurrentBkImg:(UIImage *)currentBkImg {
@@ -238,7 +229,7 @@ static NSInteger const DotBgImageTag = 2000;
 }
 
 #pragma mark - Getter Methods
--(BOOL)isTheSameColor:(UIColor*)color1 anotherColor:(UIColor*)color2{
+- (BOOL)isTheSameColor:(UIColor*)color1 anotherColor:(UIColor*)color2{
     return  CGColorEqualToColor(color1.CGColor, color2.CGColor);
 }
 

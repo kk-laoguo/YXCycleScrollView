@@ -13,7 +13,6 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-
 @class YXAnimationPageControl;
 @protocol YXAnimationPageControlDelegate <NSObject>
 
@@ -26,7 +25,6 @@ NS_ASSUME_NONNULL_BEGIN
 @interface YXAnimationPageControl : UIControl
 
 @property(nonatomic, weak) id <YXAnimationPageControlDelegate> delegate;
-
 /*
  分页数量
  */
