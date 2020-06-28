@@ -1,7 +1,7 @@
 
 # 效果图
-![bannerh1.gif](https://i.loli.net/2019/05/08/5cd26bf317b77.gif)
-
+![效果图1](https://gitee.com/Tangchi/ZainPhotoCloud/raw/master/blogimage/KKScrollView.gif)
+![效果图2](https://gitee.com/Tangchi/ZainPhotoCloud/raw/master/blogimage/YXCustomScrollView.gif)
 
 # 特性
 
