@@ -12,8 +12,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 typedef NS_ENUM(NSUInteger, YXCycleScrollViewPageContolStyle) {
-    YXCycleScrollViewPageContolStyleClassic = 0,        // 系统自带经典样式
-    YXCycleScrollViewPageContolStyleAnimated,       // 动画效果pagecontrol
+    YXCycleScrollViewPageContolStyleClassic = 0, // 系统自带经典样式
+    YXCycleScrollViewPageContolStyleAnimated, // 动画效果pagecontrol
     YXCycleScrollViewPageContolStyleNone
 };
 
