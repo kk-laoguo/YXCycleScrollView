@@ -230,7 +230,7 @@ static NSInteger const DotBgImageTag = 2000;
 
 #pragma mark - Getter Methods
 - (BOOL)isTheSameColor:(UIColor*)color1 anotherColor:(UIColor*)color2{
-    return  CGColorEqualToColor(color1.CGColor, color2.CGColor);
+    return CGColorEqualToColor(color1.CGColor, color2.CGColor);
 }
 
 @end

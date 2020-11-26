@@ -17,6 +17,7 @@ NSString *const IDENTIFI = @"YXCycleScrollViewCellIdentifier";
 @interface YXCycleScrollView ()
 <UICollectionViewDelegate,
 UICollectionViewDataSource>
+
 @property (nonatomic, strong) YXCycleScrollViewFlowLayout *flowLayout;
 @property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, weak) UIControl *pageControl;
@@ -26,6 +27,8 @@ UICollectionViewDataSource>
 @property (nonatomic, assign) BOOL itemSizeFlag;
 @property (nonatomic, assign) NSInteger indexOffset;
 @property (nonatomic, assign) NSInteger fromIndex;
+@property (nonatomic, assign) CGPoint lastOffset;
+
 @end
 
 @implementation YXCycleScrollView
@@ -41,13 +44,11 @@ UICollectionViewDataSource>
 }
 
 - (void)dealloc {
-    
     _collectionView.delegate = nil;
     _collectionView.dataSource = nil;
 }
 
 - (instancetype)initWithFrame:(CGRect)frame {
-    
     if (self = [super initWithFrame:frame]) {
         [self initialization];
         [self pm_addSubviews];
@@ -56,7 +57,6 @@ UICollectionViewDataSource>
 }
 
 - (instancetype)initWithCoder:(NSCoder *)aDecoder {
-    
     if (self = [super initWithCoder:aDecoder]) {
         [self initialization];
         [self pm_addSubviews];
@@ -73,7 +73,7 @@ UICollectionViewDataSource>
     // collectionView是否可以滑动
     _allowsDragging = YES;
     // 时间间隔
-    _autoScrollInterval = 2.5f;
+    _autoScrollInterval = 2.5;
     // pageControl 小圆点大小
     _controlSize = 6;
     // pageControl 小圆点之间的间隙
@@ -85,8 +85,12 @@ UICollectionViewDataSource>
     _imageViewContentMode = UIViewContentModeScaleToFill;
     _pageIndicatorolor = [UIColor grayColor];
     _currentPageIndicatorColor = [UIColor whiteColor];
-}
+    _pageControlBottomOffset = 10;
+    _pageControlRightOffset = 10;
+    _itemSize = self.bounds.size;
+    _itemSpacing = 0;
 
+}
 - (void)pm_addSubviews {
     
     _flowLayout = [[YXCycleScrollViewFlowLayout alloc] init];
@@ -97,31 +101,30 @@ UICollectionViewDataSource>
     _flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
     
     _collectionView = [[UICollectionView alloc] initWithFrame:self.bounds collectionViewLayout:_flowLayout];
-    _collectionView.backgroundColor = nil;
+    _collectionView.backgroundColor = self.backgroundColor;
     _collectionView.delegate = self;
     _collectionView.dataSource = self;
     _collectionView.bounces = NO;
     _collectionView.scrollsToTop = NO;
-    _collectionView.pagingEnabled = YES;
     _collectionView.showsHorizontalScrollIndicator = NO;
     _collectionView.showsVerticalScrollIndicator = NO;
     [_collectionView registerClass:[YXCycleScrollViewCell class] forCellWithReuseIdentifier:IDENTIFI];
     [self addSubview:_collectionView];
-    
 }
 
 - (void)layoutSubviews {
-    
     [super layoutSubviews];
     
-    _flowLayout.itemSize =  _itemSizeFlag ? _itemSize : self.bounds.size;
+    _flowLayout.itemSize = _itemSizeFlag ? _itemSize : self.bounds.size;
     _collectionView.frame = self.bounds;
     
-    if (_collectionView.contentOffset.x == 0 &&
-        _totalItemsCount) {
+    if (_collectionView.contentOffset.x == 0 && _totalItemsCount) {
         int targetIndex = 0;
         targetIndex = _infiniteLoop ? _totalItemsCount * 0.5 : 0;
-        [_collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:targetIndex inSection:0] atScrollPosition:[self scrollPosition] animated:NO];
+        [_collectionView scrollToItemAtIndexPath:[NSIndexPath
+                                                  indexPathForItem:targetIndex inSection:0]
+                                atScrollPosition:[self scrollPosition]
+                                        animated:NO];
     }
     
     CGSize size = CGSizeZero;
@@ -129,28 +132,66 @@ UICollectionViewDataSource>
         size = [self sizeForNumberOfPages:_imagesArray.count];
     } else {
         size = CGSizeMake(_imagesArray.count * 10 * 1.5, 10);
+        // ios14 需要按照系统规则适配pageControl size
+        if (@available(iOS 14.0, *)) {
+            UIPageControl *pageControl = (UIPageControl *)_pageControl;
+            size.width = [pageControl sizeForNumberOfPages:_imagesArray.count].width;
+        }
     }
     CGFloat x = (self.bounds.size.width - size.width) * 0.5;
-    
     if (self.pageControlAliment == YXCycleScrollViewPageContolAlimentRight) {
-        x = _collectionView.frame.size.width - size.width - 10;
+        x = _collectionView.frame.size.width - size.width - _pageControlRightOffset;
     }
-    CGFloat y = _collectionView.frame.size.height - size.height -10;
+    CGFloat y = _collectionView.frame.size.height - size.height;
     
     CGRect pageControlFrame = CGRectMake(x, y, size.width, size.height);
     pageControlFrame.origin.y -= _pageControlBottomOffset;
-    pageControlFrame.origin.x -= _pageControlRightOffset;
     _pageControl.frame = pageControlFrame;
     _pageControl.hidden = _hiddenPageControl;
+    
+    /*
+    if ([_pageControl isKindOfClass:[YXAnimationPageControl class]]) {
+        size = [self sizeForNumberOfPages:_imagesArray.count];
+        CGFloat x = (self.bounds.size.width - size.width) * 0.5;
+        if (self.pageControlAliment == YXCycleScrollViewPageContolAlimentRight) {
+            x = _collectionView.frame.size.width - size.width - 10;
+        }
+        CGFloat y = _collectionView.frame.size.height - size.height;
+        
+        CGRect pageControlFrame = CGRectMake(x, y, size.width, size.height);
+        pageControlFrame.origin.y -= _pageControlBottomOffset;
+        pageControlFrame.origin.x -= _pageControlRightOffset;
+        _pageControl.frame = pageControlFrame;
+        
+    } else {
+        size = CGSizeMake(_imagesArray.count * 10 * 1.5, 10);
+                
+        self.pageControl.translatesAutoresizingMaskIntoConstraints = NO;
+        [[self.pageControl.bottomAnchor constraintEqualToAnchor:self.bottomAnchor
+                                                       constant:-_pageControlBottomOffset] setActive:YES];
+        [[self.pageControl.heightAnchor constraintEqualToConstant:size.height] setActive:YES];
+
+        if (_pageControlAliment == YXCycleScrollViewPageContolAlimentRight) {
+            [[self.pageControl.rightAnchor constraintEqualToAnchor:self.rightAnchor
+                                                          constant:-_pageControlRightOffset] setActive:YES];
+        } else{
+
+            [[self.pageControl.centerXAnchor constraintEqualToAnchor:self.centerXAnchor] setActive:YES];
+        }
+    }
+    _pageControl.hidden = _hiddenPageControl;
+     */
 }
 
 #pragma mark - UICollectionViewDataSource
 
-- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
+- (NSInteger)collectionView:(UICollectionView *)collectionView
+     numberOfItemsInSection:(NSInteger)section {
     return _totalItemsCount;
 }
 
-- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
+                  cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     
     YXCycleScrollViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:IDENTIFI forIndexPath:indexPath];
     NSInteger index = [self pageControlIndexWithCurrentCellIndex:indexPath.item];
@@ -158,13 +199,17 @@ UICollectionViewDataSource>
     if ([_delegate respondsToSelector:@selector(customCellClassForCycleScrollView:)] &&
         [_delegate respondsToSelector:@selector(setupCustomCell:forIndex:cycleScrollView:)] &&
         [_delegate customCellClassForCycleScrollView:self]) {
-        [_delegate setupCustomCell:cell forIndex:index cycleScrollView:self];
+        [_delegate setupCustomCell:cell
+                          forIndex:index
+                   cycleScrollView:self];
         return cell;
         
     } else if ([_delegate respondsToSelector:@selector(customCellNibForCycleScrollView:)] &&
                [_delegate respondsToSelector:@selector(setupCustomCell:forIndex:cycleScrollView:)]
                && [_delegate customCellNibForCycleScrollView:self]) {
-        [_delegate setupCustomCell:cell forIndex:index cycleScrollView:self];
+        [_delegate setupCustomCell:cell
+                          forIndex:index
+                   cycleScrollView:self];
         return cell;
     }
     cell.imageView.contentMode = _imageViewContentMode;
@@ -172,12 +217,12 @@ UICollectionViewDataSource>
         cell.imageView.layer.cornerRadius = _radius;
     }
     cell.imageView.layer.masksToBounds = YES;
-    [cell.imageView sd_setImageWithURL:[NSURL URLWithString:_imagesArray[index]] placeholderImage:[UIImage imageNamed:_placeholderImageName]];
+    [cell.imageView sd_setImageWithURL: [NSURL URLWithString:_imagesArray[index]]
+                      placeholderImage: [UIImage imageNamed:_placeholderImageName]];
     return cell;
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    
     if ([_delegate respondsToSelector:@selector(cycleScrollView:didSelectItemAtIndex:)]) {
         [_delegate cycleScrollView:self
               didSelectItemAtIndex:[self pageControlIndexWithCurrentCellIndex:indexPath.item]];
@@ -185,13 +230,11 @@ UICollectionViewDataSource>
     if (_clickItemOperationBlock) {
         _clickItemOperationBlock([self pageControlIndexWithCurrentCellIndex:indexPath.item]);
     }
-    
 }
 
 #pragma mark - Private Methods
 
 - (void)pm_setupPageControl {
-    
     if (_pageControl) {
         [_pageControl removeFromSuperview];
     }
@@ -220,6 +263,9 @@ UICollectionViewDataSource>
             _pageControl = pageControl;
         }
             break;
+        case YXCycleScrollViewPageContolStyleNone: {
+            break;
+        }
     }
 
 }
@@ -236,7 +282,6 @@ UICollectionViewDataSource>
 }
 
 - (void)pm_invalidateTimer {
-
     [_timer invalidate];
     _timer = nil;
 }
@@ -261,9 +306,8 @@ UICollectionViewDataSource>
 #pragma mark - Target Methods
 
 - (void)automaticScroll {
-    if (0 == _totalItemsCount) {
-        return;
-    }
+    
+    if (0 == _totalItemsCount) { return; }
     NSInteger currentIndex = [self currentIndex];
     NSInteger targetIndex = currentIndex + 1;
     // 滚动item
@@ -284,7 +328,6 @@ UICollectionViewDataSource>
         [_collectionView registerNib:[_delegate customCellNibForCycleScrollView:self]
           forCellWithReuseIdentifier:IDENTIFI];
     }
-    
 }
 
 - (void)setAutoScrollInterval:(double)autoScrollInterval {
@@ -326,74 +369,68 @@ UICollectionViewDataSource>
     
     _imagesArray = imagesArray;
     _totalItemsCount = self.infiniteLoop ? imagesArray.count * 100 : imagesArray.count;
+    [_collectionView reloadData];
 
     if (_imagesArray.count > 1) {
         _collectionView.scrollEnabled = _allowsDragging;
         [self setAutoScroll:self.autoScroll];
+     
     } else {
         _collectionView.scrollEnabled = NO;
         [self pm_invalidateTimer];
     }
     [self pm_setupPageControl];
-    [_collectionView reloadData];
+    
 }
 
 #pragma mark - 自定义样式
 
 - (void)setImageViewContentMode:(UIViewContentMode)imageViewContentMode {
-    
     _imageViewContentMode = imageViewContentMode;
     [_collectionView reloadData];
 }
 
 - (void)setRadius:(CGFloat)radius {
-    
     _radius = radius;
     [_collectionView reloadData];
 }
 
 - (void)setAllowsDragging:(BOOL)allowsDragging {
-    
     _allowsDragging = allowsDragging;
     _collectionView.scrollEnabled = allowsDragging;
 }
 
 - (void)setHiddenPageControl:(BOOL)hiddenPageControl {
-    
     _hiddenPageControl = hiddenPageControl;
     _pageControl.hidden = hiddenPageControl;
 }
 
 - (void)setItemSize:(CGSize)itemSize {
-    
     _itemSizeFlag = YES;
     _itemSize = itemSize;
     _flowLayout.itemSize = itemSize;
 }
 
 - (void)setItemSpacing:(CGFloat)itemSpacing {
-    
     _itemSpacing = itemSpacing;
     _flowLayout.minimumLineSpacing = itemSpacing;
 }
 
 - (void)setItemZoomScale:(CGFloat)itemZoomScale {
-    
     _itemZoomScale = itemZoomScale;
     _flowLayout.zoomScale = itemZoomScale;
 }
 
 #pragma mark - PageController
 - (void)setPageControlStyle:(YXCycleScrollViewPageContolStyle)pageControlStyle {
-    
-    if (_pageControlStyle == pageControlStyle ) return;
+    if (_pageControlStyle == pageControlStyle) {
+        return;
+    }
     _pageControlStyle = pageControlStyle;
     [self pm_setupPageControl];
-    
 }
 
 - (void)setPageIndicatorolor:(UIColor *)pageIndicatorolor {
-    
     _pageIndicatorolor = pageIndicatorolor;
     if ([self.pageControl isKindOfClass:[YXAnimationPageControl class]]) {
         YXAnimationPageControl *pageControl = (YXAnimationPageControl *)_pageControl;
@@ -405,7 +442,6 @@ UICollectionViewDataSource>
 }
 
 - (void)setCurrentPageIndicatorColor:(UIColor *)currentPageIndicatorColor {
-    
     _currentPageIndicatorColor = currentPageIndicatorColor;
     if ([self.pageControl isKindOfClass:[YXAnimationPageControl class]]) {
         YXAnimationPageControl *pageControl = (YXAnimationPageControl *)_pageControl;
@@ -417,23 +453,25 @@ UICollectionViewDataSource>
 }
 
 - (void)setPageControlBottomOffset:(CGFloat)pageControlBottomOffset {
-    
-    if (_pageControlBottomOffset == pageControlBottomOffset)  return;
+    if (_pageControlBottomOffset == pageControlBottomOffset) {
+        return;
+    }
     _pageControlBottomOffset = pageControlBottomOffset;
     [self setNeedsLayout];
 }
 
 - (void)setPageControlRightOffset:(CGFloat)pageControlRightOffset {
-    
-    if (_pageControlRightOffset == pageControlRightOffset)  return;
-       
+    if (_pageControlRightOffset == pageControlRightOffset) {
+        return;
+    }
     _pageControlRightOffset = pageControlRightOffset;
     [self setNeedsLayout];
 }
 
 - (void)setControlSize:(CGFloat)controlSize {
-    
-    if (_controlSize == controlSize) return;
+    if (_controlSize == controlSize) {
+        return;
+    }
     _controlSize = controlSize;
     if ([_pageControl isKindOfClass:[YXAnimationPageControl class]]) {
         YXAnimationPageControl *pageControl = (YXAnimationPageControl *)_pageControl;
@@ -442,8 +480,9 @@ UICollectionViewDataSource>
 }
 
 - (void)setControlSpacing:(CGFloat)controlSpacing {
-    
-    if (_controlSpacing == controlSpacing) return;
+    if (_controlSpacing == controlSpacing) {
+        return;
+    }
     _controlSpacing = controlSpacing;
     if ([_pageControl isKindOfClass:[YXAnimationPageControl class]]) {
         YXAnimationPageControl *pageControl = (YXAnimationPageControl *)_pageControl;
@@ -455,8 +494,7 @@ UICollectionViewDataSource>
 
 - (NSInteger)currentIndex {
     
-    if (_collectionView.frame.size.width == 0 ||
-        _collectionView.frame.size.height == 0) {
+    if (_collectionView.frame.size.width == 0 || _collectionView.frame.size.height == 0) {
         return 0;
     }
     NSInteger index = 0;
@@ -464,16 +502,13 @@ UICollectionViewDataSource>
         index = (_collectionView.contentOffset.x + (_flowLayout.itemSize.width + _flowLayout.minimumLineSpacing) * 0.5) / (_flowLayout.itemSize.width + _flowLayout.minimumLineSpacing);
         
     } else {
-        
         index = (_collectionView.contentOffset.y + (_flowLayout.itemSize.height + _flowLayout.minimumLineSpacing) * 0.5) / (_flowLayout.itemSize.height + _flowLayout.minimumLineSpacing);
     }
     return MAX(0, index);
-    
 }
 
 - (UICollectionViewScrollPosition)scrollPosition {
     return _flowLayout.scrollDirection == UICollectionViewScrollDirectionHorizontal ? UICollectionViewScrollPositionCenteredHorizontally : UICollectionViewScrollPositionCenteredVertically;
-    
 }
 
 - (NSInteger)pageControlIndexWithCurrentCellIndex:(NSInteger)index {
@@ -484,8 +519,8 @@ UICollectionViewDataSource>
     return CGSizeMake((_controlSize + _controlSpacing) * pageCount - _controlSpacing, _controlSize);
 }
 
-#pragma mark - Public Methods
 
+#pragma mark - Public Methods
 - (void)adjustWhenControllerViewWillAppear {
     
     NSInteger targetIndex = [self currentIndex];
@@ -506,15 +541,11 @@ UICollectionViewDataSource>
 }
 
 #pragma mark - UIScrollViewDelegate
-
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    
-    if (!_imagesArray.count) {
-        return;
-    }
+    if (!_imagesArray.count) { return; }
     NSInteger itemIndex = [self currentIndex];
     NSInteger indexOnPageControl = [self pageControlIndexWithCurrentCellIndex:itemIndex];
-    
+
     if ([_pageControl isKindOfClass:[YXAnimationPageControl class]]) {
         YXAnimationPageControl *pageControl = (YXAnimationPageControl *)_pageControl;
         pageControl.currentPage = indexOnPageControl;
@@ -525,22 +556,21 @@ UICollectionViewDataSource>
 }
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
-    if (_autoScroll) {
-        [self pm_invalidateTimer];
-    }
+    
+    _lastOffset = scrollView.contentOffset;
+    if (_autoScroll) { [self pm_invalidateTimer]; }
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
-    if (_autoScroll) {
-        [self pm_addTimer];
-    }
+    if (_autoScroll) { [self pm_addTimer]; }
+}
+- (void)scrollViewDidEndDecelerating:(UIScrollView*)scrollView{
+    [self scrollViewDidEndScrollingAnimation:self.collectionView];
 }
 
 - (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView {
     
-    if (!_imagesArray.count) {
-        return;
-    }
+    if (!_imagesArray.count) { return; }
     NSInteger itemIndex = [self currentIndex];
     NSInteger indexOnPageControl = [self pageControlIndexWithCurrentCellIndex:itemIndex];
     if ([_delegate respondsToSelector:@selector(cycleScrollView:didScrollToIndex:)]) {
@@ -555,21 +585,40 @@ UICollectionViewDataSource>
 - (void)scrollViewWillEndDragging:(UIScrollView *)scrollView
                      withVelocity:(CGPoint)velocity
               targetContentOffset:(inout CGPoint *)targetContentOffset {
-    
-    if ([self currentIndex] != _fromIndex) return;
-    CGFloat sum = velocity.x + velocity.y;
-    if (sum > 0) {
-        _indexOffset = 1;
-        
-    } else if (sum < 0) {
-        _indexOffset = -1;
-        
+
+    NSInteger index = 0;
+    if (_flowLayout.scrollDirection == UICollectionViewScrollDirectionHorizontal) {
+        CGFloat currentX = scrollView.contentOffset.x;
+        CGFloat moveWidth = currentX - _lastOffset.x;
+        NSInteger shouldPage = moveWidth / (_flowLayout.itemSize.width * 0.5);
+        if (velocity.x > 0 || shouldPage > 0) {
+            _indexOffset = 1;
+        } else if (velocity.x < 0 || shouldPage < 0) {
+            _indexOffset = -1;
+        } else {
+            _indexOffset = 0;
+        }
+        index = (_lastOffset.x + (_flowLayout.itemSize.width + _flowLayout.minimumLineSpacing) * 0.5) / (_flowLayout.minimumLineSpacing + _flowLayout.itemSize.width);
+
     } else {
-        _indexOffset = 0;
+        CGFloat currentY = scrollView.contentOffset.y;
+        CGFloat moveWidth = currentY - _lastOffset.y;
+        NSInteger shouldPage = moveWidth / (_flowLayout.itemSize.width * 0.5);
+        if (velocity.y > 0 || shouldPage > 0) {
+            _indexOffset = 1;
+        } else if (velocity.y < 0 || shouldPage < 0) {
+            _indexOffset = -1;
+        } else {
+            _indexOffset = 0;
+        }
+        index = (_lastOffset.y + (_flowLayout.itemSize.height + _flowLayout.minimumLineSpacing) * 0.5) / (_flowLayout.minimumLineSpacing + _flowLayout.itemSize.height);
     }
+    [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:index + _indexOffset inSection:0] atScrollPosition:[self scrollPosition]
+                                        animated:YES];
 }
 
 - (void)scrollViewWillBeginDecelerating:(UIScrollView *)scrollView {
+    
     NSInteger index = [self currentIndex] + _indexOffset;
     [_collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:index inSection:0]
                             atScrollPosition:[self scrollPosition]

@@ -31,7 +31,8 @@ typedef NS_ENUM(NSUInteger, YXCycleScrollViewPageContolAliment) {
 /** 点击图片回调 */
 - (void)cycleScrollView:(YXCycleScrollView *)cycleScrollView didSelectItemAtIndex:(NSInteger)index;
 /** 图片滚动回调 */
-- (void)cycleScrollView:(YXCycleScrollView *)cycleScrollView didScrollToIndex:(NSInteger)index;
+- (void)cycleScrollView:(YXCycleScrollView *)cycleScrollView
+       didScrollToIndex:(NSInteger)index;
 
 /** ========== 轮播自定义cell ========== */
 /** 如果你需要自定义cell样式，请在实现此代理方法返回你的自定义cell的class。 */
@@ -114,10 +115,10 @@ IB_DESIGNABLE
 /** 默认白色 */
 @property (nonatomic, strong) IBInspectable UIColor *currentPageIndicatorColor;
 
-/** 分页控件距离轮播图的底部间距（在默认间距基础上）的偏移量 默认: 0 */
+/** 分页控件距离轮播图的底部间距（在默认间距基础上）的偏移量 默认: 10 */
 @property (nonatomic, assign) CGFloat pageControlBottomOffset;
 
-/** 分页控件距离轮播图的右边间距（在默认间距基础上）的偏移量 默认: 0 */
+/** 分页控件距离轮播图的右边间距（在默认间距基础上）的偏移量 默认: 10 */
 @property (nonatomic, assign) CGFloat pageControlRightOffset;
 
 //////////////////////// 只针对动画样式下的pageControl //////////////////////////

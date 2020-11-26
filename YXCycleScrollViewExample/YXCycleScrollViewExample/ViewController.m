@@ -59,7 +59,7 @@
                         ];
     _images = images;
     _titles = titles;
-    
+//
     /// 样式一: 动画样式pageControl
     _cycleView1.imagesArray = images;
     __weak typeof(self) weakSelf = self;
@@ -71,13 +71,14 @@
     
     /// 样式二
     YXCycleScrollView *cycleView2 = [[YXCycleScrollView alloc] initWithFrame:CGRectMake(0, 170, kSCREEN_WIDTH, 150)];
-    cycleView2.itemSpacing = 0;
-    cycleView2.itemSize = CGSizeMake(kSCREEN_WIDTH - 40, cycleView2.frame.size.height);
-    cycleView2.imagesArray = images;
+    cycleView2.itemSpacing = 20;
+    cycleView2.scrollDirection = UICollectionViewScrollDirectionVertical;
+    cycleView2.itemSize = CGSizeMake(kSCREEN_WIDTH, cycleView2.frame.size.height);
+    cycleView2.imagesArray = @[@"http://pic37.nipic.com/20140105/15166348_202320428000_2.jpg", @"http://pic36.nipic.com/20131126/8821914_071759099000_2.jpg"];
     [self.scrollView addSubview:cycleView2];
     _cycleView2 = cycleView2;
     
-    /// 样式二
+    /// 样式三
     YXCycleScrollView *cycleView3 = [[YXCycleScrollView alloc] initWithFrame:CGRectMake(0, 170 + 170, kSCREEN_WIDTH, 150)];
     cycleView3.itemSpacing = 0;
     cycleView3.pageControlStyle = YXCycleScrollViewPageContolStyleAnimated;
@@ -86,7 +87,7 @@
     cycleView3.imagesArray = images;
     [self.scrollView addSubview:cycleView3];
     _cycleView3 = cycleView3;
-    
+
     /// 自定义样式 一定要设置代理
     _cycleView4 = [[YXCycleScrollView alloc] initWithFrame:CGRectMake(0, 170 * 3, kSCREEN_WIDTH, 150)];
     _cycleView4.pageControlStyle = YXCycleScrollViewPageContolStyleAnimated;
@@ -94,7 +95,7 @@
     _cycleView4.imagesArray = images;
     _cycleView4.delegate = self;
     [self.scrollView addSubview:_cycleView4];
-    
+//
 }
 
 #pragma mark - YXCycleScrollViewDelegate

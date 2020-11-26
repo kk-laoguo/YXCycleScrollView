@@ -3,11 +3,11 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		4240D87D04480D454CD20C7A /* Pods_YXCycleScrollViewExample.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F463E1A917E7E41AE59B8FE /* Pods_YXCycleScrollViewExample.framework */; };
+		4240D87D04480D454CD20C7A /* Pods_YXCycleScrollViewExample.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F463E1A917E7E41AE59B8FE /* Pods_YXCycleScrollViewExample.framework */; settings = {ATTRIBUTES = (Required, ); }; };
 		74500E7222845B5900612C47 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 74500E7122845B5900612C47 /* AppDelegate.m */; };
 		74500E7522845B5900612C47 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 74500E7422845B5900612C47 /* ViewController.m */; };
 		74500E7A22845B5A00612C47 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 74500E7922845B5A00612C47 /* Assets.xcassets */; };
@@ -407,6 +407,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 2D39S8YPM7;
 				INFOPLIST_FILE = YXCycleScrollViewExample/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -425,6 +426,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 2D39S8YPM7;
 				INFOPLIST_FILE = YXCycleScrollViewExample/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
