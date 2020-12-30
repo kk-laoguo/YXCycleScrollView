@@ -68,7 +68,6 @@
         NSLog(@"-------------->点击了第%ld个", (long)currentIndex);
         [weakSelf.navigationController pushViewController:[NSClassFromString(@"CycleScrollViewController") new] animated:YES];
     };
-    
     /// 样式二
     YXCycleScrollView *cycleView2 = [[YXCycleScrollView alloc] initWithFrame:CGRectMake(0, 170, kSCREEN_WIDTH, 150)];
     cycleView2.itemSpacing = 20;

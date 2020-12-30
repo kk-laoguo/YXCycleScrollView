@@ -193,7 +193,9 @@ UICollectionViewDataSource>
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    YXCycleScrollViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:IDENTIFI forIndexPath:indexPath];
+    YXCycleScrollViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:IDENTIFI
+                                                                            forIndexPath:indexPath];
+    
     NSInteger index = [self pageControlIndexWithCurrentCellIndex:indexPath.item];
     
     if ([_delegate respondsToSelector:@selector(customCellClassForCycleScrollView:)] &&
@@ -531,17 +533,11 @@ UICollectionViewDataSource>
     }
     
 }
-- (void)makeSccrollViewScrollToIndex:(NSInteger)index {
-    
-    if (0 == _totalItemsCount) return;
-    [self pm_scrollToindex:(NSInteger)(_totalItemsCount * 0.5 + index)];
-    if (_autoScroll) {
-        [self pm_addTimer];
-    }
-}
+
 
 #pragma mark - UIScrollViewDelegate
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    
     if (!_imagesArray.count) { return; }
     NSInteger itemIndex = [self currentIndex];
     NSInteger indexOnPageControl = [self pageControlIndexWithCurrentCellIndex:itemIndex];
@@ -562,9 +558,11 @@ UICollectionViewDataSource>
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
+    
     if (_autoScroll) { [self pm_addTimer]; }
 }
-- (void)scrollViewDidEndDecelerating:(UIScrollView*)scrollView{
+- (void)scrollViewDidEndDecelerating:(UIScrollView*)scrollView {
+    
     [self scrollViewDidEndScrollingAnimation:self.collectionView];
 }
 
@@ -613,14 +611,35 @@ UICollectionViewDataSource>
         }
         index = (_lastOffset.y + (_flowLayout.itemSize.height + _flowLayout.minimumLineSpacing) * 0.5) / (_flowLayout.minimumLineSpacing + _flowLayout.itemSize.height);
     }
-    [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:index + _indexOffset inSection:0] atScrollPosition:[self scrollPosition]
+    
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index + _indexOffset inSection:0];
+
+    if (indexPath.row < 0 ) {
+        indexPath = [NSIndexPath indexPathForRow:_totalItemsCount * 0.5
+                                       inSection:0];
+    } else if (indexPath.row > (_totalItemsCount - 1)) {
+        indexPath = [NSIndexPath indexPathForRow:0
+                                       inSection:0];
+    }
+    [self.collectionView scrollToItemAtIndexPath:indexPath
+                                atScrollPosition:[self scrollPosition]
                                         animated:YES];
 }
 
 - (void)scrollViewWillBeginDecelerating:(UIScrollView *)scrollView {
     
     NSInteger index = [self currentIndex] + _indexOffset;
-    [_collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:index inSection:0]
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index
+                                                inSection:0];
+    if (index < 0 ) {
+        indexPath = [NSIndexPath indexPathForRow:_totalItemsCount * 0.5
+                                       inSection:0];
+    }
+    if (index > (_totalItemsCount - 1)) {
+        indexPath = [NSIndexPath indexPathForRow:0
+                                       inSection:0];
+    }
+    [_collectionView scrollToItemAtIndexPath:indexPath
                             atScrollPosition:[self scrollPosition]
                                     animated:YES];
     _indexOffset = 0;
